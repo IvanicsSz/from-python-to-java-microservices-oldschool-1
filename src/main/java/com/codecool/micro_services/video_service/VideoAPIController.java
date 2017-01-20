@@ -19,12 +19,22 @@ public class VideoAPIController {
     private final VimeoAPIService vimeoAPIService;
     private List<String> videos;
 
+    /**
+     * @param youTubeAPIService
+     * @param vimeoAPIService
+     */
     public VideoAPIController(YouTubeAPIService youTubeAPIService, VimeoAPIService vimeoAPIService) {
         this.youTubeAPIService = youTubeAPIService;
         this.vimeoAPIService = vimeoAPIService;
     }
 
-    // todo: controller's resp.: validate queryparam - returns what the service object gives back (in the desired format (eg. json))
+    /**
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     public String getVideoLinks(Request request, Response response) throws IOException, URISyntaxException {
         String searchKey = request.queryParams(SEARCH_PARAM_KEY);
         Map<String, List<String>> result = new HashMap<>();
@@ -36,7 +46,6 @@ public class VideoAPIController {
                     .put("error_code", 400).toString();
         }
 
-        // todo: this is not the responsibility of the controller - another service layer (communicates in JAVA)
         videos = new ArrayList<>();
         for (String category : VIDEO_CATEGORIES) {
             String embedCodeForYoutube = youTubeAPIService.getVideoFromYoutube(searchKey + "+" + category);
@@ -53,6 +62,17 @@ public class VideoAPIController {
         return result.toString();
     }
 
+    /**
+     * Build a Json as a response from the service
+     *
+     * @param title - searched parameter
+     * @param embedCode - the results embed code with iframe tag
+     * @param provider - api service from the video came (Vimeo or Youtube)
+     * @param category - searched categories
+     *
+     * @return Json as a service response
+     *
+     */
 
     private String responseBuilder(String title, String embedCode, String provider, String category) {
         return new JSONObject()
