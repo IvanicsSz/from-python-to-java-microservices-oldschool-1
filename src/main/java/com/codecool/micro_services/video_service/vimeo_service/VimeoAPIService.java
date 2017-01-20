@@ -7,12 +7,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.utils.StringUtils;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-// TODO: proper logging
+
 
 public class VimeoAPIService {
     private static final Logger logger = LoggerFactory.getLogger(VimeoAPIService.class);
@@ -28,6 +29,14 @@ public class VimeoAPIService {
         return INSTANCE;
     }
 
+    /**
+     * Gets videos from vimeo by the search expression as iframe Json
+     *
+     * @param searchExpression - if not {@link StringUtils#isEmpty(Object)} acts as a filter.
+     * @return - JSON received from the API as it is.
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     public String getVideoFromVimeo(String searchExpression) throws IOException, URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder(API_URL);
         uriBuilder.addParameter("page", "1");  //optional
@@ -47,6 +56,13 @@ public class VimeoAPIService {
     }
 
 
+    /**
+     * Executes the actual GET request against the given URI
+     *
+     * @param uri - obj containing path and params.
+     * @return
+     * @throws IOException
+     */
     private String execute(URI uri) throws IOException {
         return Request.Get(uri)
                 .addHeader("Authorization", AUTH_TOKEN)
@@ -55,6 +71,13 @@ public class VimeoAPIService {
                 .asString();
     }
 
+    /**
+     * Gets embed Json from API's response
+     *
+     * @param jsonString - Json received from the API as it is.
+     * @return
+     * @throws IOException
+     */
     private String getLinkFromJSON(String jsonString) {
         JSONObject json = new JSONObject(jsonString);
         JSONArray dataArray = (JSONArray) json.get("data");

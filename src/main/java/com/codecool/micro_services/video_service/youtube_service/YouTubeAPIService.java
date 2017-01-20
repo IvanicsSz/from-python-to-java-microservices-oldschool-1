@@ -36,6 +36,15 @@ public class YouTubeAPIService {
         return INSTANCE;
     }
 
+    /**
+     * Gets videos from youtube by the search expression
+     *
+     * @param productName - if not {@link spark.utils.StringUtils#isEmpty(Object)} acts as a filter.
+     * @return - embed Json from api
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+
     public String getVideoFromYoutube(String productName) throws IOException, URISyntaxException {
         logger.info("Getting a video from Youtube api");
         URIBuilder builder = new URIBuilder(API_URL);
@@ -56,6 +65,14 @@ public class YouTubeAPIService {
         return getVideoFromYoutubeJSONParser(builder.build());
     }
 
+    /**
+     * Gets an iframe embed json by the youtube api search
+     *
+     * @param uri - obj containing path and params.
+     * @return - JSON received from the API put it to an iframe tag
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     private String getVideoFromYoutubeJSONParser(URI uri) throws IOException, URISyntaxException{
         String result = null;
         JSONArray items = new JSONObject(execute(uri)).getJSONArray("items");
@@ -73,6 +90,13 @@ public class YouTubeAPIService {
         return embed;
     }
 
+    /**
+     * Executes the actual GET request against the given URI
+     *
+     * @param uri - obj containing path and params.
+     * @return
+     * @throws IOException
+     */
     private String execute(URI uri) throws IOException {
         return Request.Get(uri)
                 .addHeader("Accept", "text/plain")
